@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -29,6 +30,10 @@ var rootCmd = &cobra.Command{
 	Use:   "claude-status",
 	Short: "Monitor status.claude.com and toast on state changes",
 	RunE: func(cmd *cobra.Command, _ []string) error {
+		if flagInterval < 10*time.Second {
+			return fmt.Errorf("--interval must be at least 10s, got %s", flagInterval)
+		}
+
 		logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 		ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
@@ -60,10 +65,6 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().DurationVar(&flagInterval, "interval", 60*time.Second, "polling interval (min 10s)")
 	rootCmd.PersistentFlags().StringVar(&flagURL, "url", defaultURL, "Statuspage v2 status.json URL")
-}
-
-// init preserves scaffold registrations.
-func init() {
 	rootCmd.Version = GetVersionJSON()
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose output")

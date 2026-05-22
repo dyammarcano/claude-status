@@ -3,7 +3,6 @@ package monitor
 import (
 	"context"
 	"errors"
-	"io"
 	"log/slog"
 	"testing"
 
@@ -23,8 +22,10 @@ func (f *fakeFetcher) Fetch(_ context.Context) (statuspage.Status, error) {
 	if f.idx >= len(f.results) {
 		return statuspage.Status{}, errors.New("exhausted")
 	}
+
 	r := f.results[f.idx]
 	f.idx++
+
 	return r.s, r.err
 }
 
@@ -41,7 +42,7 @@ func newMonitor(f *fakeFetcher, n *fakeNotifier) *Monitor {
 	return &Monitor{
 		Fetcher:     f,
 		Notifier:    n,
-		Logger:      slog.New(slog.NewJSONHandler(io.Discard, nil)),
+		Logger:      slog.New(slog.DiscardHandler),
 		ErrorStreak: 3,
 	}
 }
@@ -51,6 +52,7 @@ func TestTick_FirstObservationSilent(t *testing.T) {
 	n := &fakeNotifier{}
 	m := newMonitor(f, n)
 	m.tick(context.Background())
+
 	if len(n.calls) != 0 {
 		t.Fatalf("expected no toast on first observation, got %v", n.calls)
 	}
@@ -65,9 +67,11 @@ func TestTick_TransitionFires(t *testing.T) {
 	m := newMonitor(f, n)
 	m.tick(context.Background())
 	m.tick(context.Background())
+
 	if len(n.calls) != 1 {
 		t.Fatalf("expected 1 toast, got %d", len(n.calls))
 	}
+
 	if n.calls[0].title != "Claude status: minor" || n.calls[0].body != "Partial outage" {
 		t.Fatalf("unexpected toast: %+v", n.calls[0])
 	}
@@ -82,6 +86,7 @@ func TestTick_NoChangeSilent(t *testing.T) {
 	m := newMonitor(f, n)
 	m.tick(context.Background())
 	m.tick(context.Background())
+
 	if len(n.calls) != 0 {
 		t.Fatalf("expected no toast, got %v", n.calls)
 	}
@@ -96,6 +101,7 @@ func TestTick_RecoveryFires(t *testing.T) {
 	m := newMonitor(f, n)
 	m.tick(context.Background())
 	m.tick(context.Background())
+
 	if len(n.calls) != 1 || n.calls[0].title != "Claude status: none" {
 		t.Fatalf("unexpected calls: %+v", n.calls)
 	}
@@ -107,13 +113,16 @@ func TestTick_ErrorStreakFiresOnce(t *testing.T) {
 		{err: boom}, {err: boom}, {err: boom}, {err: boom},
 	}}
 	n := &fakeNotifier{}
+
 	m := newMonitor(f, n)
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		m.tick(context.Background())
 	}
+
 	if len(n.calls) != 1 {
 		t.Fatalf("expected exactly 1 unreachable toast, got %d: %+v", len(n.calls), n.calls)
 	}
+
 	if n.calls[0].title != "claude-status" {
 		t.Fatalf("unexpected title: %q", n.calls[0].title)
 	}
@@ -127,10 +136,12 @@ func TestTick_ErrorThenSuccessResets(t *testing.T) {
 		{err: boom}, {err: boom},
 	}}
 	n := &fakeNotifier{}
+
 	m := newMonitor(f, n)
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		m.tick(context.Background())
 	}
+
 	if len(n.calls) != 0 {
 		t.Fatalf("expected no toasts (streak reset), got %+v", n.calls)
 	}
