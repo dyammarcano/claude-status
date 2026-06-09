@@ -19,5 +19,6 @@ func (w *WindowsToaster) Notify(title, body string) error {
 		Title:   title,
 		Message: body,
 	}
+
 	return n.Push()
 }

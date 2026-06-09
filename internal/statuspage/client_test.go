@@ -10,6 +10,7 @@ import (
 
 func TestFetch_Success(t *testing.T) {
 	body := `{"page":{"updated_at":"2026-05-22T00:00:00Z"},"status":{"indicator":"minor","description":"Partial outage"}}`
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(body))
@@ -17,10 +18,12 @@ func TestFetch_Success(t *testing.T) {
 	defer srv.Close()
 
 	c := NewClient(srv.URL, "test-agent", 2*time.Second)
+
 	got, err := c.Fetch(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
+
 	if got.Indicator != "minor" || got.Description != "Partial outage" {
 		t.Fatalf("unexpected status: %+v", got)
 	}

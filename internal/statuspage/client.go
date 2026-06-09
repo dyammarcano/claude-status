@@ -44,6 +44,7 @@ func (c *Client) Fetch(ctx context.Context) (Status, error) {
 	if err != nil {
 		return Status{}, fmt.Errorf("build request: %w", err)
 	}
+
 	req.Header.Set("User-Agent", c.userAgent)
 	req.Header.Set("Accept", "application/json")
 
@@ -51,6 +52,7 @@ func (c *Client) Fetch(ctx context.Context) (Status, error) {
 	if err != nil {
 		return Status{}, fmt.Errorf("http get: %w", err)
 	}
+
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
@@ -61,5 +63,6 @@ func (c *Client) Fetch(ctx context.Context) (Status, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		return Status{}, fmt.Errorf("decode: %w", err)
 	}
+
 	return Status{Indicator: body.Status.Indicator, Description: body.Status.Description}, nil
 }

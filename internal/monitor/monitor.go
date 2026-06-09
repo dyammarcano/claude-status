@@ -39,6 +39,7 @@ func (m *Monitor) Run(ctx context.Context) error {
 	if m.ErrorStreak <= 0 {
 		m.ErrorStreak = 3
 	}
+
 	if m.Interval <= 0 {
 		m.Interval = 60 * time.Second
 	}
@@ -47,6 +48,7 @@ func (m *Monitor) Run(ctx context.Context) error {
 
 	t := time.NewTicker(m.Interval)
 	defer t.Stop()
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -63,12 +65,15 @@ func (m *Monitor) tick(ctx context.Context) {
 	if err != nil {
 		m.errStreak++
 		m.Logger.Warn("poll failed", "err", err, "streak", m.errStreak)
+
 		if m.errStreak >= m.ErrorStreak && !m.errToasted {
 			if nerr := m.Notifier.Notify("claude-status", "Cannot reach status page"); nerr != nil {
 				m.Logger.Warn("notify failed", "err", nerr)
 			}
+
 			m.errToasted = true
 		}
+
 		return
 	}
 
@@ -80,6 +85,7 @@ func (m *Monitor) tick(ctx context.Context) {
 		m.previous = st.Indicator
 		m.hasPrev = true
 		m.Logger.Info("initial status", "indicator", st.Indicator, "description", st.Description)
+
 		return
 	}
 
@@ -89,9 +95,11 @@ func (m *Monitor) tick(ctx context.Context) {
 	}
 
 	m.Logger.Info("status changed", "from", m.previous, "to", st.Indicator, "description", st.Description)
+
 	title := fmt.Sprintf("Claude status: %s", st.Indicator)
 	if err := m.Notifier.Notify(title, st.Description); err != nil {
 		m.Logger.Warn("notify failed", "err", err)
 	}
+
 	m.previous = st.Indicator
 }
