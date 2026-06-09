@@ -11,8 +11,8 @@
 
 ## v1.0.0 - First Stable Release
 - **Target:** TBD
-- **Status:** Not Started
+- **Status:** In Progress
 - **Goals:**
-  - [ ] 80%+ test coverage
-  - [ ] README usage docs
+  - [x] 80%+ test coverage (88.9%)
+  - [x] README usage docs
   - [ ] GoReleaser tagged build

@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Current Status
-**Overall Progress:** 70% - Monitor implemented and tested; polishing toward v0.1.0
+**Overall Progress:** 90% - Monitor implemented, lint clean, 88.9% coverage; release pending
 
 ## Phases
 
@@ -15,8 +15,8 @@
 
 ### Phase 2: Polish [IN PROGRESS]
 - [x] README usage section
-- [ ] golangci-lint clean
-- [ ] 80%+ test coverage
+- [x] golangci-lint clean
+- [x] 80%+ test coverage (88.9%)
 - [ ] GitHub release via goreleaser
 
 ### Phase 3: v1.0.0 [NOT STARTED]
