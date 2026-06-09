@@ -66,3 +66,10 @@ linters:
     - goconst
     - gocyclo
     - whitespace
+
+  # Generated, gitignored files (e.g. cmd/version.go from genversioninfo) must
+  # not gate lint — they are regenerated at build time and never hand-edited.
+  exclusions:
+    generated: lax
+    paths:
+      - cmd/version\.go$
