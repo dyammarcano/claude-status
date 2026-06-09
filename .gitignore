@@ -58,7 +58,6 @@ bin/
 cmake-build-*/
 
 # Generated files
-cmd/version.go
 .go-version
 /pkg/pb/
 
