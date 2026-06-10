@@ -87,12 +87,13 @@ This sets `statusLine.command` in `~/.claude/settings.json` to `claude-status st
 ### On-demand readout
 
 ```powershell
-go run . usage           # human table
-go run . usage --json    # machine-readable
+go run . usage              # human table (session/weekly %, resets, context, cost)
+go run . usage --estimate   # + per-model token estimate (scans transcripts; slower)
+go run . usage --json       # machine-readable
 ```
 
-Per-model figures are **estimates** computed from local transcripts; the session/weekly percentages and reset times are the official values from Claude Code.
+The session/weekly percentages and reset times are the **official** values from Claude Code. Per-model token counts (shown with `--estimate`) are **estimates** computed from local transcripts.
 
 ## License
 
-MIT
+BSD 3-Clause — see [LICENSE](LICENSE).

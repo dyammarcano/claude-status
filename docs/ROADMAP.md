@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Current Status
-**Overall Progress:** 90% - Monitor implemented, lint clean, 88.9% coverage; release pending
+**Overall Progress:** 95% - Monitor + usage tracking shipped (lint clean, 87.3% coverage); only the public release remains
 
 ## Phases
 
@@ -16,7 +16,7 @@
 ### Phase 2: Polish [IN PROGRESS]
 - [x] README usage section
 - [x] golangci-lint clean
-- [x] 80%+ test coverage (88.9%)
+- [x] 80%+ test coverage (87.3%)
 - [ ] GitHub release via goreleaser
 
 ### Phase 2.5: Usage tracking [COMPLETE]
