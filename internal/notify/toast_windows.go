@@ -59,9 +59,10 @@ func New(appID string) Notifier { return &WindowsToaster{AppID: appID} }
 // Notify implements Notifier.
 func (w *WindowsToaster) Notify(title, body string) error {
 	n := toast.Notification{
-		AppID:   w.AppID,
-		Title:   title,
-		Message: body,
+		AppID:    w.AppID,
+		Title:    title,
+		Message:  body,
+		Duration: toast.Long, // keep the toast on screen longer (~25s vs the ~5s default)
 	}
 
 	if icon := iconFile(); icon != "" {

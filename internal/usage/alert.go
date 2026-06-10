@@ -101,9 +101,6 @@ func alertBody(w, other Window, otherLabel string, s Snapshot, now time.Time) st
 		fmt.Fprintf(&b, "Context %.0f%%", s.ContextPct)
 	}
 
-	b.WriteByte('\n')
-	fmt.Fprintf(&b, "$%.2f", s.CostUSD)
-
 	return b.String()
 }
 
