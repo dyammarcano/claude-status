@@ -68,6 +68,31 @@ func TestEvaluate_MilestoneSequence(t *testing.T) {
 	}
 }
 
+func TestEvaluate_RichBody(t *testing.T) {
+	now := time.Unix(1781950000, 0)
+	st := &AlertState{}
+	s := Snapshot{
+		Session:    Window{UsedPct: 82, ResetsAt: time.Unix(1781956800, 0), Known: true},
+		Weekly:     Window{UsedPct: 45, ResetsAt: time.Unix(1782300000, 0), Known: true},
+		ContextPct: 62, CostUSD: 4.20, Model: "Opus 4.8",
+	}
+
+	got := Evaluate(s, []float64{80}, st, now)
+	if len(got) != 1 {
+		t.Fatalf("expected 1 alert, got %d", len(got))
+	}
+
+	if got[0].Title != "Claude session 80%" {
+		t.Fatalf("title = %q", got[0].Title)
+	}
+
+	for _, want := range []string{"Resets in", "Weekly 45%", "Context 62%", "$4.20", "Opus 4.8"} {
+		if !strings.Contains(got[0].Body, want) {
+			t.Fatalf("body %q missing %q", got[0].Body, want)
+		}
+	}
+}
+
 func TestEvaluate_ReArmsAfterReset(t *testing.T) {
 	now := time.Unix(1781950000, 0)
 	st := &AlertState{}

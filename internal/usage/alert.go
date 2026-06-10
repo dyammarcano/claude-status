@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 
 	var alerts []Alert
 
-	check := func(key, label string, w Window) {
+	check := func(key, label, otherLabel string, w, other Window) {
 		if !w.Known {
 			return
 		}
@@ -58,7 +59,7 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 		if highest > prev.MaxAlerted {
 			alerts = append(alerts, Alert{
 				Title: fmt.Sprintf("Claude %s %.0f%%", label, highest),
-				Body:  resetLine(w, now),
+				Body:  alertBody(w, other, otherLabel, s, now),
 			})
 		}
 
@@ -66,8 +67,8 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 		st.Windows[key] = prev
 	}
 
-	check("session", "session", s.Session)
-	check("weekly", "weekly", s.Weekly)
+	check("session", "session", "Weekly", s.Session, s.Weekly)
+	check("weekly", "weekly", "Session", s.Weekly, s.Session)
 
 	return alerts
 }
@@ -80,15 +81,34 @@ func resetUnix(w Window) int64 {
 	return w.ResetsAt.Unix()
 }
 
-// resetLine is the toast body: a "Resets in <countdown>" line followed by the
-// wall-clock time on a second line. Windows renders the newline as a line break;
-// if it doesn't, the text still reads fine on one line.
-func resetLine(w Window, now time.Time) string {
+// alertBody builds the multi-line toast body: the crossed window's reset time,
+// then the complementary window's usage + context, then cost + model — a compact
+// usage snapshot. Newlines render as line breaks on Windows toasts.
+func alertBody(w, other Window, otherLabel string, s Snapshot, now time.Time) string {
+	var b strings.Builder
+
 	if w.ResetsAt.IsZero() {
-		return "Reset time unknown"
+		b.WriteString("Reset time unknown")
+	} else {
+		fmt.Fprintf(&b, "Resets in %s · %s", FormatCountdown(w.ResetsAt, now), w.ResetsAt.Format("Mon 3:04 PM"))
 	}
 
-	return fmt.Sprintf("Resets in %s\n%s", FormatCountdown(w.ResetsAt, now), w.ResetsAt.Format("Mon 3:04 PM"))
+	b.WriteByte('\n')
+
+	if other.Known {
+		fmt.Fprintf(&b, "%s %.0f%% · Context %.0f%%", otherLabel, other.UsedPct, s.ContextPct)
+	} else {
+		fmt.Fprintf(&b, "Context %.0f%%", s.ContextPct)
+	}
+
+	b.WriteByte('\n')
+	fmt.Fprintf(&b, "$%.2f", s.CostUSD)
+
+	if s.Model != "" {
+		fmt.Fprintf(&b, " · %s", s.Model)
+	}
+
+	return b.String()
 }
 
 // LoadState reads alert state; a missing file yields empty state.
