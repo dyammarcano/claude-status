@@ -44,7 +44,7 @@ func EstimateModels(dir string, since time.Time) ([]ModelUsage, error) {
 		if e.IsDir() {
 			files, _ := os.ReadDir(path)
 			for _, f := range files {
-				if filepath.Ext(f.Name()) == ".jsonl" {
+				if filepath.Ext(f.Name()) == ".jsonl" && modifiedSince(f, since) {
 					accumulateFile(filepath.Join(path, f.Name()), since, agg)
 				}
 			}
@@ -52,7 +52,7 @@ func EstimateModels(dir string, since time.Time) ([]ModelUsage, error) {
 			continue
 		}
 
-		if filepath.Ext(e.Name()) == ".jsonl" {
+		if filepath.Ext(e.Name()) == ".jsonl" && modifiedSince(e, since) {
 			accumulateFile(path, since, agg)
 		}
 	}
@@ -65,6 +65,18 @@ func EstimateModels(dir string, since time.Time) ([]ModelUsage, error) {
 	sort.Slice(out, func(i, j int) bool { return out[i].Model < out[j].Model })
 
 	return out, nil
+}
+
+// modifiedSince reports whether e was last modified at or after t. A file not
+// touched within the window cannot contain entries inside it, so it is skipped —
+// this avoids reading the entire (potentially huge) transcript history.
+func modifiedSince(e os.DirEntry, t time.Time) bool {
+	info, err := e.Info()
+	if err != nil {
+		return true // can't tell — don't skip
+	}
+
+	return !info.ModTime().Before(t)
 }
 
 func accumulateFile(path string, since time.Time, agg map[string]*ModelUsage) {

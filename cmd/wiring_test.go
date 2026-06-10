@@ -69,7 +69,7 @@ func TestResolveExecAndThresholds(t *testing.T) {
 }
 
 func TestRunUsage_NoCapture(t *testing.T) {
-	t.Cleanup(func() { usageCaptureOvr = ""; usageJSON = false; usageNoEstimate = false })
+	t.Cleanup(func() { usageCaptureOvr = ""; usageJSON = false; usageEstimate = false })
 
 	usageCaptureOvr = filepath.Join(t.TempDir(), "missing.json")
 	out := new(bytes.Buffer)
@@ -85,7 +85,7 @@ func TestRunUsage_NoCapture(t *testing.T) {
 }
 
 func TestRunUsage_TableAndJSON(t *testing.T) {
-	t.Cleanup(func() { usageCaptureOvr = ""; usageJSON = false; usageNoEstimate = false })
+	t.Cleanup(func() { usageCaptureOvr = ""; usageJSON = false; usageEstimate = false })
 
 	path := filepath.Join(t.TempDir(), "usage.json")
 	now := time.Now()
@@ -99,7 +99,7 @@ func TestRunUsage_TableAndJSON(t *testing.T) {
 	}
 
 	usageCaptureOvr = path
-	usageNoEstimate = true
+	usageEstimate = false // official snapshot only; estimate is opt-in
 
 	out := new(bytes.Buffer)
 	usageCmd.SetOut(out)

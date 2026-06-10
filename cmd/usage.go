@@ -14,7 +14,7 @@ import (
 
 var (
 	usageJSON       bool
-	usageNoEstimate bool
+	usageEstimate   bool
 	usageCaptureOvr string
 )
 
@@ -27,7 +27,7 @@ var usageCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(usageCmd)
 	usageCmd.Flags().BoolVar(&usageJSON, "json", false, "output as JSON")
-	usageCmd.Flags().BoolVar(&usageNoEstimate, "no-estimate", false, "skip per-model transcript estimate")
+	usageCmd.Flags().BoolVar(&usageEstimate, "estimate", false, "include per-model token estimate from transcripts (slower; scans ~/.claude/projects)")
 	usageCmd.Flags().StringVar(&usageCaptureOvr, "capture-file", "", "override capture file path")
 }
 
@@ -57,7 +57,7 @@ func runUsage(cmd *cobra.Command, _ []string) error {
 
 	var models []usage.ModelUsage
 
-	if !usageNoEstimate {
+	if usageEstimate {
 		if dir, derr := usage.TranscriptsDir(); derr == nil {
 			models, _ = usage.EstimateModels(dir, now.Add(-7*24*time.Hour))
 		}

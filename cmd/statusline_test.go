@@ -41,6 +41,7 @@ func TestStatuslineInstall_PrintOnly(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("CLAUDE_CONFIG_DIR", dir)
 	isolateCache(t) // keep config.json writes out of the real cache
+
 	_ = os.WriteFile(filepath.Join(dir, "settings.json"), []byte(`{"statusLine":{"type":"command","command":"node gsd.js"}}`), 0o644)
 
 	out := new(bytes.Buffer)
