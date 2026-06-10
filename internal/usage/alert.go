@@ -67,8 +67,8 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 		st.Windows[key] = prev
 	}
 
-	check("session", "session", "Weekly", s.Session, s.Weekly)
-	check("weekly", "weekly", "Session", s.Weekly, s.Session)
+	check("session", "5h limit", "Weekly", s.Session, s.Weekly)
+	check("weekly", "weekly", "5h limit", s.Weekly, s.Session)
 
 	return alerts
 }
