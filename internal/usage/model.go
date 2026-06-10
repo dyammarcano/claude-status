@@ -69,7 +69,7 @@ func FormatCountdown(t, now time.Time) string {
 func ParseThresholds(s string) []float64 {
 	var out []float64
 
-	for _, p := range strings.Split(s, ",") {
+	for p := range strings.SplitSeq(s, ",") {
 		p = strings.TrimSpace(p)
 		if p == "" {
 			continue
