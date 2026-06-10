@@ -94,6 +94,19 @@ go run . usage --json       # machine-readable
 
 The session/weekly percentages and reset times are the **official** values from Claude Code. Per-model token counts (shown with `--estimate`) are **estimates** computed from local transcripts.
 
+## Run at startup (Windows)
+
+Start the status.claude.com monitor automatically at logon. It runs **hidden in your user session** (a true Windows service runs in session 0 and can't show toasts), logging to `<cache>/claude-status/monitor.log`:
+
+```powershell
+claude-status service install     # register to start hidden at next logon
+claude-status service status      # show whether it's installed
+claude-status service uninstall   # remove the auto-start entry
+claude-status --background        # start now without re-logging in (self-hides)
+```
+
+> **Usage-limit toasts don't need this service** — they already fire from the statusLine wrapper installed via `claude-status statusline --install`. This auto-start is only for the **status.claude.com incident monitor**.
+
 ## License
 
 BSD 3-Clause — see [LICENSE](LICENSE).

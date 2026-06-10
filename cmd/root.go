@@ -3,15 +3,18 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
 	"github.com/dyammarcano/claude-status/internal/monitor"
 	"github.com/dyammarcano/claude-status/internal/notify"
 	"github.com/dyammarcano/claude-status/internal/statuspage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 	"github.com/spf13/cobra"
 )
 
@@ -22,8 +25,9 @@ const (
 )
 
 var (
-	flagInterval time.Duration
-	flagURL      string
+	flagInterval   time.Duration
+	flagURL        string
+	flagBackground bool
 )
 
 var rootCmd = &cobra.Command{
@@ -34,7 +38,19 @@ var rootCmd = &cobra.Command{
 			return fmt.Errorf("--interval must be at least 10s, got %s", flagInterval)
 		}
 
-		logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+		var out io.Writer = os.Stdout
+
+		if flagBackground {
+			hideConsole()
+
+			if f, err := backgroundLog(); err == nil {
+				out = f
+
+				defer func() { _ = f.Close() }()
+			}
+		}
+
+		logger := slog.New(slog.NewJSONHandler(out, nil))
 
 		ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 		defer stop()
@@ -55,6 +71,16 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+// backgroundLog opens the append-only monitor log used in --background mode.
+func backgroundLog() (*os.File, error) {
+	dir, err := usage.CacheDir()
+	if err != nil {
+		return nil, err
+	}
+
+	return os.OpenFile(filepath.Join(dir, "monitor.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+}
+
 // Execute runs the root command.
 func Execute() {
 	if err := rootCmd.ExecuteContext(context.Background()); err != nil {
@@ -65,6 +91,7 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().DurationVar(&flagInterval, "interval", 60*time.Second, "polling interval (min 10s)")
 	rootCmd.PersistentFlags().StringVar(&flagURL, "url", defaultURL, "Statuspage v2 status.json URL")
+	rootCmd.PersistentFlags().BoolVar(&flagBackground, "background", false, "run hidden, logging to <cache>/claude-status/monitor.log (used by service install)")
 	rootCmd.Version = GetVersionJSON()
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
