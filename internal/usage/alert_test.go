@@ -47,12 +47,12 @@ func TestEvaluate_MilestoneSequence(t *testing.T) {
 		milestone string // expected text in the toast body when it fires
 	}{
 		{45, 0, ""},
-		{52, 1, "5h limit 50%"},
+		{52, 1, "5h limit 52%"},
 		{58, 0, ""},
-		{63, 1, "5h limit 60%"},
-		{77, 1, "5h limit 70%"},
-		{84, 1, "5h limit 80%"},
-		{91, 1, "5h limit 90%"},
+		{63, 1, "5h limit 63%"},
+		{77, 1, "5h limit 77%"},
+		{84, 1, "5h limit 84%"},
+		{91, 1, "5h limit 91%"},
 		{100, 1, "5h limit 100%"},
 	}
 
@@ -82,7 +82,7 @@ func TestEvaluate_RichBody(t *testing.T) {
 		t.Fatalf("expected 1 alert, got %d", len(got))
 	}
 
-	if got[0].Title != "Claude 5h limit 80% (now 82%)" {
+	if got[0].Title != "Claude 5h limit 82%" {
 		t.Fatalf("title = %q", got[0].Title)
 	}
 

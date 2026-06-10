@@ -58,7 +58,7 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 
 		if highest > prev.MaxAlerted {
 			alerts = append(alerts, Alert{
-				Title: fmt.Sprintf("Claude %s %.0f%% (now %.0f%%)", label, highest, w.UsedPct),
+				Title: fmt.Sprintf("Claude %s %.0f%%", label, w.UsedPct),
 				Body:  alertBody(w, other, otherLabel, s, now),
 			})
 		}
