@@ -36,8 +36,8 @@ func TestParseThresholds(t *testing.T) {
 	}{
 		{"80,95", []float64{80, 95}},
 		{" 50 , 90 ", []float64{50, 90}},
-		{"", []float64{80, 95}},
-		{"garbage", []float64{80, 95}},
+		{"", []float64{50, 60, 70, 80, 90, 100}},
+		{"garbage", []float64{50, 60, 70, 80, 90, 100}},
 	}
 	for _, tc := range tests {
 		got := ParseThresholds(tc.in)

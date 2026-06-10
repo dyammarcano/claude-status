@@ -2,6 +2,7 @@ package usage
 
 import (
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -30,6 +31,40 @@ func TestEvaluate_CrossesOnce(t *testing.T) {
 
 	if a3 := Evaluate(snap(96, 1781956800), th, st, now); len(a3) != 1 {
 		t.Fatalf("96%% should cross 95, got %d", len(a3))
+	}
+}
+
+func TestEvaluate_MilestoneSequence(t *testing.T) {
+	now := time.Unix(1781950000, 0)
+	st := &AlertState{}
+	th := []float64{50, 60, 70, 80, 90, 100} // default milestones
+
+	const epoch = int64(1781956800)
+
+	steps := []struct {
+		pct       float64
+		wantFires int
+		milestone string // expected text in the toast body when it fires
+	}{
+		{45, 0, ""},
+		{52, 1, "session 50%"},
+		{58, 0, ""},
+		{63, 1, "session 60%"},
+		{77, 1, "session 70%"},
+		{84, 1, "session 80%"},
+		{91, 1, "session 90%"},
+		{100, 1, "session 100%"},
+	}
+
+	for _, s := range steps {
+		got := Evaluate(snap(s.pct, epoch), th, st, now)
+		if len(got) != s.wantFires {
+			t.Fatalf("at %.0f%%: got %d fires, want %d", s.pct, len(got), s.wantFires)
+		}
+
+		if s.wantFires == 1 && !strings.Contains(got[0].Body, s.milestone) {
+			t.Fatalf("at %.0f%%: body %q missing %q", s.pct, got[0].Body, s.milestone)
+		}
 	}
 }
 

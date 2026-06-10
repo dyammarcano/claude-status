@@ -83,7 +83,7 @@ func ParseThresholds(s string) []float64 {
 	}
 
 	if len(out) == 0 {
-		return []float64{80, 95}
+		return []float64{50, 60, 70, 80, 90, 100}
 	}
 
 	return out

@@ -33,7 +33,7 @@ var statuslineCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(statuslineCmd)
 	statuslineCmd.Flags().StringVar(&statuslineExec, "exec", "", "downstream statusline command to run (overrides config)")
-	statuslineCmd.Flags().StringVar(&statuslineThresholds, "thresholds", "", "comma list of alert percents (default 80,95)")
+	statuslineCmd.Flags().StringVar(&statuslineThresholds, "thresholds", "", "comma list of alert percents (default 50,60,70,80,90,100)")
 	statuslineCmd.Flags().StringVar(&statuslineCaptureOvr, "capture-file", "", "override capture file path")
 	statuslineCmd.Flags().BoolVar(&statuslineNoAlert, "no-alert", false, "disable toast alerts")
 	statuslineCmd.Flags().BoolVar(&statuslineInstall, "install", false, "print (or with --write, apply) the settings.json wiring")
@@ -113,7 +113,7 @@ func resolveThresholds() string {
 		}
 	}
 
-	return "80,95"
+	return "50,60,70,80,90,100"
 }
 
 // builtinStatusLine renders a minimal one-line status, used when no downstream

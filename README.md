@@ -82,7 +82,7 @@ go run . statusline --install
 go run . statusline --install --write
 ```
 
-This sets `statusLine.command` in `~/.claude/settings.json` to `claude-status statusline`. On each render it captures the official `rate_limits` and toasts when session/weekly usage crosses 80% or 95% (re-arming after each reset).
+This sets `statusLine.command` in `~/.claude/settings.json` to `claude-status statusline`. On each render it captures the official `rate_limits` and toasts as session/weekly usage climbs past each milestone — **50, 60, 70, 80, 90, 100%** (once per milestone, re-arming after each reset). Override with `--thresholds "80,95"`.
 
 ### On-demand readout
 

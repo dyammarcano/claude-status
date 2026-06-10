@@ -63,7 +63,7 @@ func TestResolveExecAndThresholds(t *testing.T) {
 
 	statuslineThresholds = ""
 
-	if got := resolveThresholds(); got != "80,95" {
+	if got := resolveThresholds(); got != "50,60,70,80,90,100" {
 		t.Fatalf("default thresholds = %q", got)
 	}
 }
