@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/inovacc/claude-status/internal/usage"
 	"github.com/spf13/cobra"
 )
@@ -82,7 +83,8 @@ func renderUsageTable(w io.Writer, s usage.Snapshot, models []usage.ModelUsage, 
 		_, _ = fmt.Fprintln(w, "\n  Per-model (estimate, last 7d)")
 
 		for _, m := range models {
-			_, _ = fmt.Fprintf(w, "    %-22s in %d  out %d  cache %d\n", m.Model, m.InputTokens, m.OutputTokens, m.CacheTokens)
+			_, _ = fmt.Fprintf(w, "    %-22s in %s  out %s  cache %s\n",
+				m.Model, humanize.Comma(m.InputTokens), humanize.Comma(m.OutputTokens), humanize.Comma(m.CacheTokens))
 		}
 	}
 }

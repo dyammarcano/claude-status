@@ -3,6 +3,7 @@ module github.com/inovacc/claude-status
 go 1.25
 
 require (
+	github.com/dustin/go-humanize v1.0.1
 	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4
 	github.com/inovacc/genversioninfo v0.3.0
 	github.com/spf13/cobra v1.8.0
