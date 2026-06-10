@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"runtime"
+	"strings"
 	"time"
 )
 
@@ -16,13 +16,62 @@ import (
 // transcripts, or any network source. The payload is passed via stdin only.
 type ShellRunner func(command string) *exec.Cmd
 
-// DefaultShellRunner runs command through the platform shell.
+// DefaultShellRunner builds the downstream command by tokenizing command into
+// argv and exec'ing the program directly — NO shell. This keeps quoted paths
+// intact across platforms (e.g. `node "C:/a b/x.js"`, which cmd /c would mangle)
+// and avoids shell-injection. Shell operators (pipes, &&, redirects) in a
+// passthrough command are intentionally NOT supported.
 func DefaultShellRunner(command string) *exec.Cmd {
-	if runtime.GOOS == "windows" {
-		return exec.Command("cmd", "/c", command)
+	args := splitArgs(command)
+	if len(args) == 0 {
+		return exec.Command(command) // degenerate; the caller handles execCmd==""
 	}
 
-	return exec.Command("sh", "-c", command)
+	return exec.Command(args[0], args[1:]...)
+}
+
+// splitArgs tokenizes a command line into argv, honoring single/double quotes so
+// arguments containing spaces survive intact. Quotes are stripped from tokens.
+func splitArgs(s string) []string {
+	var (
+		args  []string
+		cur   strings.Builder
+		inArg bool
+		quote rune
+	)
+
+	for _, r := range s {
+		switch {
+		case quote != 0:
+			if r == quote {
+				quote = 0
+			} else {
+				cur.WriteRune(r)
+			}
+
+			inArg = true
+		case r == '"' || r == '\'':
+			quote = r
+			inArg = true
+		case r == ' ' || r == '\t':
+			if inArg {
+				args = append(args, cur.String())
+				cur.Reset()
+
+				inArg = false
+			}
+		default:
+			cur.WriteRune(r)
+
+			inArg = true
+		}
+	}
+
+	if inArg {
+		args = append(args, cur.String())
+	}
+
+	return args
 }
 
 // CaptureAndPassthrough reads the full statusline payload from in, writes a

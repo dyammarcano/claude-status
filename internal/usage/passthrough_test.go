@@ -86,3 +86,29 @@ func TestCaptureAndPassthrough_DownstreamExitPropagates(t *testing.T) {
 		t.Fatalf("exit = %d, want 2", exit)
 	}
 }
+
+func TestSplitArgs(t *testing.T) {
+	tests := []struct {
+		in   string
+		want []string
+	}{
+		{`node "C:/Users/x/.claude/hooks/gsd-statusline.js"`, []string{"node", "C:/Users/x/.claude/hooks/gsd-statusline.js"}},
+		{`echo hi`, []string{"echo", "hi"}},
+		{`pwsh -File "C:/a b/s.ps1"`, []string{"pwsh", "-File", "C:/a b/s.ps1"}},
+		{`  spaced   out  `, []string{"spaced", "out"}},
+		{``, nil},
+	}
+
+	for _, tc := range tests {
+		got := splitArgs(tc.in)
+		if len(got) != len(tc.want) {
+			t.Fatalf("splitArgs(%q) = %v, want %v", tc.in, got, tc.want)
+		}
+
+		for i := range got {
+			if got[i] != tc.want[i] {
+				t.Fatalf("splitArgs(%q) = %v, want %v", tc.in, got, tc.want)
+			}
+		}
+	}
+}
