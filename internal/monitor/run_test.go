@@ -3,7 +3,6 @@ package monitor
 import (
 	"context"
 	"errors"
-	"io"
 	"log/slog"
 	"testing"
 	"time"
@@ -23,7 +22,7 @@ func (e *errNotifier) Notify(_, _ string) error {
 }
 
 func discardLogger() *slog.Logger {
-	return slog.New(slog.NewJSONHandler(io.Discard, nil))
+	return slog.New(slog.DiscardHandler)
 }
 
 func TestRun_CancelledContextReturnsNil(t *testing.T) {

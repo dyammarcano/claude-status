@@ -19,5 +19,10 @@
 - [x] 80%+ test coverage (88.9%)
 - [ ] GitHub release via goreleaser
 
+### Phase 2.5: Usage tracking [COMPLETE]
+- [x] internal/usage: capture, alert, estimate, passthrough, config
+- [x] `claude-status statusline` wrapper + `--install`
+- [x] `claude-status usage` readout (table + --json)
+
 ### Phase 3: v1.0.0 [NOT STARTED]
 - [ ] Tagged release
