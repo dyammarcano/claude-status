@@ -140,11 +140,18 @@ func TestRunStatusline_NoAlertCaptures(t *testing.T) {
 	statuslineNoAlert = true
 	statuslineExec = "" // no downstream spawned
 
+	out := new(bytes.Buffer)
+
 	statuslineCmd.SetIn(strings.NewReader(`{"rate_limits":{"five_hour":{"used_percentage":61,"resets_at":1781956800}}}`))
-	statuslineCmd.SetOut(new(bytes.Buffer))
+	statuslineCmd.SetOut(out)
 
 	if err := runStatusline(statuslineCmd, nil); err != nil {
 		t.Fatalf("runStatusline: %v", err)
+	}
+
+	// With no downstream, a non-blank built-in line must be printed.
+	if !strings.Contains(out.String(), "5h 61%") {
+		t.Fatalf("expected built-in status line, got: %q", out.String())
 	}
 
 	snap, err := usage.ReadSnapshot(capture)
@@ -154,6 +161,43 @@ func TestRunStatusline_NoAlertCaptures(t *testing.T) {
 
 	if !snap.Session.Known || snap.Session.UsedPct != 61 {
 		t.Fatalf("snapshot wrong: %+v", snap.Session)
+	}
+}
+
+func TestBuiltinStatusLine(t *testing.T) {
+	line := builtinStatusLine(usage.Snapshot{
+		Session: usage.Window{UsedPct: 61, Known: true},
+		Weekly:  usage.Window{UsedPct: 38, Known: true},
+		Model:   "Opus",
+	})
+	for _, want := range []string{"claude-status", "5h 61%", "7d 38%", "Opus"} {
+		if !strings.Contains(line, want) {
+			t.Fatalf("built-in line %q missing %q", line, want)
+		}
+	}
+
+	if got := builtinStatusLine(usage.Snapshot{}); got != "claude-status" {
+		t.Fatalf("empty built-in line = %q, want never-blank prefix", got)
+	}
+}
+
+func TestCapturedAgo(t *testing.T) {
+	now := time.Unix(1_000_000, 0)
+
+	cases := []struct {
+		at   time.Time
+		want string
+	}{
+		{time.Time{}, "time unknown"},
+		{now.Add(30 * time.Second), "just now"}, // future
+		{now.Add(-30 * time.Second), "30s ago"},
+		{now.Add(-5 * time.Minute), "5m ago"},
+		{now.Add(-3 * time.Hour), "3h ago"},
+	}
+	for _, c := range cases {
+		if got := capturedAgo(c.at, now); got != c.want {
+			t.Fatalf("capturedAgo = %q, want %q", got, c.want)
+		}
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/inovacc/claude-status/internal/notify"
@@ -49,6 +50,14 @@ func runStatusline(cmd *cobra.Command, _ []string) error {
 	execCmd := resolveExec()
 
 	snap, _, _ := usage.CaptureAndPassthrough(cmd.InOrStdin(), cmd.OutOrStdout(), capturePath, execCmd, usage.DefaultShellRunner, now)
+
+	// With no downstream command, render a minimal built-in line so the status
+	// line is never blank. The downstream exit code is intentionally ignored and
+	// we always return nil: a status line must never fail the host, even when the
+	// downstream errors.
+	if execCmd == "" {
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), builtinStatusLine(snap))
+	}
 
 	if !statuslineNoAlert {
 		statePath, err := usage.StateFilePath()
@@ -105,6 +114,26 @@ func resolveThresholds() string {
 	}
 
 	return "80,95"
+}
+
+// builtinStatusLine renders a minimal one-line status, used when no downstream
+// statusline command is configured so the status line is never blank.
+func builtinStatusLine(s usage.Snapshot) string {
+	parts := []string{"claude-status"}
+
+	if s.Session.Known {
+		parts = append(parts, fmt.Sprintf("5h %.0f%%", s.Session.UsedPct))
+	}
+
+	if s.Weekly.Known {
+		parts = append(parts, fmt.Sprintf("7d %.0f%%", s.Weekly.UsedPct))
+	}
+
+	if s.Model != "" {
+		parts = append(parts, s.Model)
+	}
+
+	return strings.Join(parts, " · ")
 }
 
 // emitAlerts loads state, evaluates thresholds, fires toasts via n, and saves state.

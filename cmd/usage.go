@@ -73,7 +73,7 @@ func runUsage(cmd *cobra.Command, _ []string) error {
 }
 
 func renderUsageTable(w io.Writer, s usage.Snapshot, models []usage.ModelUsage, now time.Time) {
-	_, _ = fmt.Fprintf(w, "Claude Code usage    (captured %s ago)\n", usage.FormatCountdown(now.Add(now.Sub(s.CapturedAt)), now))
+	_, _ = fmt.Fprintf(w, "Claude Code usage    (captured %s)\n", capturedAgo(s.CapturedAt, now))
 	_, _ = fmt.Fprintf(w, "  Session (5h)   %s   resets %s\n", pct(s.Session), reset(s.Session, now))
 	_, _ = fmt.Fprintf(w, "  Weekly  (7d)   %s   resets %s\n", pct(s.Weekly), reset(s.Weekly, now))
 	_, _ = fmt.Fprintf(w, "  Context %.0f%%    Cost $%.2f    Model %s\n", s.ContextPct, s.CostUSD, modelOrUnknown(s.Model))
@@ -84,6 +84,26 @@ func renderUsageTable(w io.Writer, s usage.Snapshot, models []usage.ModelUsage, 
 		for _, m := range models {
 			_, _ = fmt.Fprintf(w, "    %-22s in %d  out %d  cache %d\n", m.Model, m.InputTokens, m.OutputTokens, m.CacheTokens)
 		}
+	}
+}
+
+// capturedAgo renders how long ago the snapshot was captured.
+func capturedAgo(at, now time.Time) string {
+	if at.IsZero() {
+		return "time unknown"
+	}
+
+	d := now.Sub(at)
+
+	switch {
+	case d < 0:
+		return "just now"
+	case d < time.Minute:
+		return fmt.Sprintf("%ds ago", int(d.Seconds()))
+	case d < time.Hour:
+		return fmt.Sprintf("%dm ago", int(d.Minutes()))
+	default:
+		return fmt.Sprintf("%dh ago", int(d.Hours()))
 	}
 }
 
