@@ -100,6 +100,7 @@ func CaptureAndPassthrough(in io.Reader, out io.Writer, capturePath, execCmd str
 	cmd.Stdin = bytes.NewReader(payload)
 	cmd.Stdout = out
 	cmd.Stderr = os.Stderr
+	hideChildWindow(cmd) // suppress the child's console window (Windows) — no flash per render
 
 	exit := 0
 
