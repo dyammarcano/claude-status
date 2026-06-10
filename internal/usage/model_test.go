@@ -44,6 +44,7 @@ func TestParseThresholds(t *testing.T) {
 		if len(got) != len(tc.want) {
 			t.Fatalf("ParseThresholds(%q) = %v, want %v", tc.in, got, tc.want)
 		}
+
 		for i := range got {
 			if got[i] != tc.want[i] {
 				t.Fatalf("ParseThresholds(%q) = %v, want %v", tc.in, got, tc.want)

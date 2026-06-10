@@ -8,6 +8,7 @@ import (
 
 func TestRootCmdIntervalValidation(t *testing.T) {
 	orig := flagInterval
+
 	defer func() { flagInterval = orig }()
 
 	flagInterval = 5 * time.Second
