@@ -57,6 +57,7 @@ func FormatCountdown(t, now time.Time) string {
 	}
 
 	h := int(d / time.Hour)
+
 	m := int((d % time.Hour) / time.Minute)
 	if h > 0 {
 		return fmt.Sprintf("%dh%dm", h, m)

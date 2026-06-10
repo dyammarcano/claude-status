@@ -30,7 +30,6 @@ func TestFormatCountdown(t *testing.T) {
 }
 
 func TestParseThresholds(t *testing.T) {
-
 	tests := []struct {
 		in   string
 		want []float64
