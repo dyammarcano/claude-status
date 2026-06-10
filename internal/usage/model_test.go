@@ -7,6 +7,7 @@ import (
 
 func TestFormatCountdown(t *testing.T) {
 	now := time.Date(2026, 6, 9, 12, 0, 0, 0, time.UTC)
+
 	tests := []struct {
 		name string
 		at   time.Time
@@ -29,6 +30,7 @@ func TestFormatCountdown(t *testing.T) {
 }
 
 func TestParseThresholds(t *testing.T) {
+
 	tests := []struct {
 		in   string
 		want []float64

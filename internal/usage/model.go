@@ -47,6 +47,7 @@ func FormatCountdown(t, now time.Time) string {
 
 	if d >= 24*time.Hour {
 		days := int(d / (24 * time.Hour))
+
 		hours := int((d % (24 * time.Hour)) / time.Hour)
 		if hours > 0 {
 			return fmt.Sprintf("%dd%dh", days, hours)
