@@ -57,8 +57,8 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 
 		if highest > prev.MaxAlerted {
 			alerts = append(alerts, Alert{
-				Title: "claude-status",
-				Body:  fmt.Sprintf("Claude %s %.0f%% — resets %s", label, highest, resetClock(w, now)),
+				Title: fmt.Sprintf("Claude %s %.0f%%", label, highest),
+				Body:  resetLine(w, now),
 			})
 		}
 
@@ -80,12 +80,15 @@ func resetUnix(w Window) int64 {
 	return w.ResetsAt.Unix()
 }
 
-func resetClock(w Window, now time.Time) string {
+// resetLine is the toast body: a "Resets in <countdown>" line followed by the
+// wall-clock time on a second line. Windows renders the newline as a line break;
+// if it doesn't, the text still reads fine on one line.
+func resetLine(w Window, now time.Time) string {
 	if w.ResetsAt.IsZero() {
-		return "unknown"
+		return "Reset time unknown"
 	}
 
-	return fmt.Sprintf("%s (%s)", FormatCountdown(w.ResetsAt, now), w.ResetsAt.Format("Mon 3:04 PM"))
+	return fmt.Sprintf("Resets in %s\n%s", FormatCountdown(w.ResetsAt, now), w.ResetsAt.Format("Mon 3:04 PM"))
 }
 
 // LoadState reads alert state; a missing file yields empty state.

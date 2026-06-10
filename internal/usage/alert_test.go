@@ -62,8 +62,8 @@ func TestEvaluate_MilestoneSequence(t *testing.T) {
 			t.Fatalf("at %.0f%%: got %d fires, want %d", s.pct, len(got), s.wantFires)
 		}
 
-		if s.wantFires == 1 && !strings.Contains(got[0].Body, s.milestone) {
-			t.Fatalf("at %.0f%%: body %q missing %q", s.pct, got[0].Body, s.milestone)
+		if s.wantFires == 1 && !strings.Contains(got[0].Title, s.milestone) {
+			t.Fatalf("at %.0f%%: title %q missing %q", s.pct, got[0].Title, s.milestone)
 		}
 	}
 }
