@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/notify"
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/notify"
+	"github.com/dyammarcano/claude-status/internal/usage"
 	"github.com/spf13/cobra"
 )
 

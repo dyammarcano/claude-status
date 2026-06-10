@@ -5,7 +5,7 @@ claude-status is a CLI application
 ## Installation
 
 ```bash
-go install github.com/inovacc/claude-status@latest
+go install github.com/dyammarcano/claude-status@latest
 ```
 
 ## Usage

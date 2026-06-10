@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 )
 
 type fakeNotifier struct{ count int }

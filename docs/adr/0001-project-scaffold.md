@@ -12,7 +12,7 @@ Accepted — 2026-05-22
 - **Task Runner:** Taskfile.
 - **Linting:** golangci-lint v2.
 - **Releases:** GoReleaser.
-- **Module Path:** `github.com/inovacc/claude-status`.
+- **Module Path:** `github.com/dyammarcano/claude-status`.
 - **Notifications:** `github.com/go-toast/toast` behind a `Notifier` interface with build-tagged Windows / no-op stub implementations.
 - **Data source:** Statuspage v2 JSON API (`/api/v2/status.json`) — no HTML scraping.
 

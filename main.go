@@ -1,6 +1,6 @@
 package main
 
-import "github.com/inovacc/claude-status/cmd"
+import "github.com/dyammarcano/claude-status/cmd"
 
 func main() {
 	cmd.Execute()

@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"testing"
 
-	"github.com/inovacc/claude-status/internal/statuspage"
+	"github.com/dyammarcano/claude-status/internal/statuspage"
 )
 
 type fakeFetcher struct {

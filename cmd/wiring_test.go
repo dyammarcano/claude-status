@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 )
 
 // isolateCache points os.UserCacheDir at a temp dir so config/state lookups in

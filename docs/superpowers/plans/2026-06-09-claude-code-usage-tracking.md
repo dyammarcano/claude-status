@@ -1355,7 +1355,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 )
 
 type fakeNotifier struct{ count int }
@@ -1424,8 +1424,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/notify"
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/notify"
+	"github.com/dyammarcano/claude-status/internal/usage"
 	"github.com/spf13/cobra"
 )
 
@@ -1614,7 +1614,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 )
 
 func sampleSnapshot(now time.Time) usage.Snapshot {
@@ -1681,7 +1681,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 	"github.com/spf13/cobra"
 )
 

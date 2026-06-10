@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/statuspage"
+	"github.com/dyammarcano/claude-status/internal/statuspage"
 )
 
 // StatusFetcher is the dependency monitor needs from statuspage.

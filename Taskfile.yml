@@ -32,7 +32,7 @@ tasks:
   build:
     desc: Build the application
     cmds:
-      - go build -ldflags "-X github.com/inovacc/claude-status/cmd.Version=$VERSION -X github.com/inovacc/claude-status/cmd.GitHash=$COMMIT -X github.com/inovacc/claude-status/cmd.BuildTime=$BUILD_DATE" -o $APP_NAME
+      - go build -ldflags "-X github.com/dyammarcano/claude-status/cmd.Version=$VERSION -X github.com/dyammarcano/claude-status/cmd.GitHash=$COMMIT -X github.com/dyammarcano/claude-status/cmd.BuildTime=$BUILD_DATE" -o $APP_NAME
     vars:
       VERSION: "{{ .VERSION }}"
       COMMIT: "{{ .COMMIT }}"
@@ -148,7 +148,7 @@ tasks:
   install:
     desc: Install the application
     cmds:
-      - go install -ldflags "-X github.com/inovacc/claude-status/cmd.Version=$VERSION -X github.com/inovacc/claude-status/cmd.GitHash=$COMMIT -X github.com/inovacc/claude-status/cmd.BuildTime=$BUILD_DATE"
+      - go install -ldflags "-X github.com/dyammarcano/claude-status/cmd.Version=$VERSION -X github.com/dyammarcano/claude-status/cmd.GitHash=$COMMIT -X github.com/dyammarcano/claude-status/cmd.BuildTime=$BUILD_DATE"
     vars:
       VERSION: "{{ .VERSION }}"
       COMMIT: "{{ .COMMIT }}"

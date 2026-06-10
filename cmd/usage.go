@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/inovacc/claude-status/internal/usage"
+	"github.com/dyammarcano/claude-status/internal/usage"
 	"github.com/spf13/cobra"
 )
 

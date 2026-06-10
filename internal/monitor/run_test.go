@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inovacc/claude-status/internal/statuspage"
+	"github.com/dyammarcano/claude-status/internal/statuspage"
 )
 
 // errNotifier always fails Notify so the "notify failed" warn branches in

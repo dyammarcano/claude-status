@@ -20,11 +20,11 @@ builds:
       - arm64
     ldflags:
       - -s -w
-      - -X github.com/inovacc/claude-status/cmd.Version={{ .Version }}
-      - -X github.com/inovacc/claude-status/cmd.GitHash={{ .Commit }}
-      - -X github.com/inovacc/claude-status/cmd.BuildTime={{ .Date }}
-      - -X github.com/inovacc/claude-status/cmd.GOOS={{ .Os }}
-      - -X github.com/inovacc/claude-status/cmd.GOARCH={{ .Arch }}
+      - -X github.com/dyammarcano/claude-status/cmd.Version={{ .Version }}
+      - -X github.com/dyammarcano/claude-status/cmd.GitHash={{ .Commit }}
+      - -X github.com/dyammarcano/claude-status/cmd.BuildTime={{ .Date }}
+      - -X github.com/dyammarcano/claude-status/cmd.GOOS={{ .Os }}
+      - -X github.com/dyammarcano/claude-status/cmd.GOARCH={{ .Arch }}
 
 archives:
   - formats: [tar.gz]

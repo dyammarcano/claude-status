@@ -1,4 +1,4 @@
-module github.com/inovacc/claude-status
+module github.com/dyammarcano/claude-status
 
 go 1.25
 
