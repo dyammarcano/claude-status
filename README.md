@@ -66,6 +66,33 @@ On non-Windows platforms the notifier prints to stderr instead of firing a toast
 
 Press Ctrl+C to stop.
 
+## Usage limits (Claude Code)
+
+`claude-status` can also surface your Claude Code subscription usage — 5-hour session %, weekly %, both reset times, context %, cost, and an estimated per-model token breakdown.
+
+### One-time setup
+
+Wire claude-status into your Claude Code status line (it passes through to your existing one):
+
+```powershell
+# Print the wiring (saves your current status line as the passthrough target):
+go run . statusline --install
+
+# Or apply it automatically:
+go run . statusline --install --write
+```
+
+This sets `statusLine.command` in `~/.claude/settings.json` to `claude-status statusline`. On each render it captures the official `rate_limits` and toasts when session/weekly usage crosses 80% or 95% (re-arming after each reset).
+
+### On-demand readout
+
+```powershell
+go run . usage           # human table
+go run . usage --json    # machine-readable
+```
+
+Per-model figures are **estimates** computed from local transcripts; the session/weekly percentages and reset times are the official values from Claude Code.
+
 ## License
 
 MIT
