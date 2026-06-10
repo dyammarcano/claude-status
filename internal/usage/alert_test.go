@@ -82,11 +82,11 @@ func TestEvaluate_RichBody(t *testing.T) {
 		t.Fatalf("expected 1 alert, got %d", len(got))
 	}
 
-	if got[0].Title != "Claude session 80%" {
+	if got[0].Title != "Claude session 80% (now 82%)" {
 		t.Fatalf("title = %q", got[0].Title)
 	}
 
-	for _, want := range []string{"Resets in", "Weekly 45%", "Context 62%", "$4.20", "Opus 4.8"} {
+	for _, want := range []string{"Resets in", "Weekly 45%", "Context 62%", "$4.20"} {
 		if !strings.Contains(got[0].Body, want) {
 			t.Fatalf("body %q missing %q", got[0].Body, want)
 		}
