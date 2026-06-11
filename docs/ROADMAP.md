@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Current Status
-**Overall Progress:** 95% - Monitor + usage tracking shipped (lint clean, 87.3% coverage); only the public release remains
+**Overall Progress:** 97% - Monitor, usage tracking, Windows auto-start, and toast UX all shipped (lint clean, ~83% coverage); only the goreleaser public release remains
 
 ## Phases
 
@@ -24,5 +24,16 @@
 - [x] `claude-status statusline` wrapper + `--install`
 - [x] `claude-status usage` readout (table + --json)
 
+### Phase 2.6: Windows auto-start [COMPLETE] (v0.3.0)
+- [x] `service install/uninstall/status` via HKCU Run key (logon, user session)
+- [x] `--background` hidden mode (console hidden, logs to `<cache>/monitor.log`)
+- [x] Non-windows stub + Linux CI fix (windows-tagged notify test)
+
+### Phase 2.7: Toast UX polish [COMPLETE] (v0.4.0 candidate)
+- [x] Spawn passthrough child with `CREATE_NO_WINDOW` (no per-render console flash)
+- [x] Relabel "session" → "5h limit"; title shows current % only
+- [x] Colored severity dot in title (🔵 <70% · 🟡 ≥70% · 🔴 ≥90%) with `·` separator
+
 ### Phase 3: v1.0.0 [NOT STARTED]
-- [ ] Tagged release
+- [ ] GitHub release via goreleaser
+- [ ] Tagged stable release
