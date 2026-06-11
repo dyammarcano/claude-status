@@ -82,7 +82,7 @@ func TestEvaluate_RichBody(t *testing.T) {
 		t.Fatalf("expected 1 alert, got %d", len(got))
 	}
 
-	if got[0].Title != "🟡 Claude 5h limit 82%" {
+	if got[0].Title != "🟡 · Claude 5h limit 82%" {
 		t.Fatalf("title = %q", got[0].Title)
 	}
 
