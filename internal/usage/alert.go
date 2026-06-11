@@ -58,7 +58,7 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 
 		if highest > prev.MaxAlerted {
 			alerts = append(alerts, Alert{
-				Title: fmt.Sprintf("Claude %s %.0f%%", label, w.UsedPct),
+				Title: fmt.Sprintf("%s Claude %s %.0f%%", severityEmoji(w.UsedPct), label, w.UsedPct),
 				Body:  alertBody(w, other, otherLabel, s, now),
 			})
 		}
@@ -71,6 +71,19 @@ func Evaluate(s Snapshot, thresholds []float64, st *AlertState, now time.Time) [
 	check("weekly", "weekly", "5h limit", s.Weekly, s.Session)
 
 	return alerts
+}
+
+// severityEmoji returns a colored status dot for the usage level: blue under 70%,
+// amber from 70% up, red from 90% up. Prefixed to the toast title.
+func severityEmoji(pct float64) string {
+	switch {
+	case pct >= 90:
+		return "🔴"
+	case pct >= 70:
+		return "🟡"
+	default:
+		return "🔵"
+	}
 }
 
 func resetUnix(w Window) int64 {

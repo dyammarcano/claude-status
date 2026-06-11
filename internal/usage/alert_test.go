@@ -82,7 +82,7 @@ func TestEvaluate_RichBody(t *testing.T) {
 		t.Fatalf("expected 1 alert, got %d", len(got))
 	}
 
-	if got[0].Title != "Claude 5h limit 82%" {
+	if got[0].Title != "🟡 Claude 5h limit 82%" {
 		t.Fatalf("title = %q", got[0].Title)
 	}
 
@@ -134,5 +134,20 @@ func TestStateRoundTrip(t *testing.T) {
 
 	if got.Windows["session"].MaxAlerted != 80 {
 		t.Fatalf("state not persisted: %+v", got)
+	}
+}
+
+func TestSeverityEmoji(t *testing.T) {
+	cases := []struct {
+		pct  float64
+		want string
+	}{
+		{0, "🔵"}, {69.9, "🔵"}, {70, "🟡"}, {89.9, "🟡"}, {90, "🔴"}, {100, "🔴"},
+	}
+
+	for _, c := range cases {
+		if got := severityEmoji(c.pct); got != c.want {
+			t.Fatalf("severityEmoji(%.1f) = %q, want %q", c.pct, got, c.want)
+		}
 	}
 }
